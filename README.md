@@ -83,5 +83,3 @@ No uses `localhost` ni `127.0.0.1` como IP en el teléfono: allí apuntarían al
 
 Flutter inicia la conexión al relay; Unity recibe el mensaje `connect`, ejecuta la noche y envía las tareas y los estados a Flutter. Las tareas se resuelven en el teléfono. Un ataque detiene la partida y muestra el jumpscare con su sonido en Flutter y en la ventana **Game** de Unity. La lógica de rutas, probabilidades y progreso está descrita en `Unity/Assets/scripts/INTEGRACION_UNITY.md`.
 
-
-ary`, `build`, `.dart_tool` y `venv`), la base local `backend/partida.db` y los archivos de entorno o calibración local. Se regeneran al abrir o compilar cada componente.
