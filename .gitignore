@@ -1,0 +1,31 @@
+# Unity generated files
+**/[Ll]ibrary/
+**/[Tt]emp/
+**/[Oo]bj/
+**/[Ll]ogs/
+**/[Uu]serSettings/
+*.csproj
+*.sln
+
+# Flutter generated files
+**/.dart_tool/
+**/build/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/local.properties
+**/ephemeral/
+**/.kotlin/
+
+# Python generated files and local state
+**/__pycache__/
+*.py[cod]
+**/venv/
+**/.venv/
+**/partida.db
+backend/calibracion.json
+**/.env
+**/.env.*
+
+# Local IDE settings
+.vscode/
+.idea/
