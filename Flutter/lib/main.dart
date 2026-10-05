@@ -19,10 +19,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+<<<<<<< HEAD
+    final GameProvider gameProvider = GameProvider();
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => ConnectionProvider()..onMessage = gameProvider.handleMessage,
+        ),
+        ChangeNotifierProvider.value(value: gameProvider),
+=======
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ConnectionProvider()),
         ChangeNotifierProvider(create: (_) => GameProvider()),
+>>>>>>> origin/main
       ],
       child: MaterialApp(
         title: "Five Nights at Freddy's - Tablet",

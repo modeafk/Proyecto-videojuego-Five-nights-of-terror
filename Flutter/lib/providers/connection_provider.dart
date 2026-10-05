@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+import 'dart:async';
+
+=======
+>>>>>>> origin/main
 import 'package:flutter/foundation.dart';
 import '../config/player_identity.dart';
 import '../config/server_config.dart';
@@ -15,6 +20,21 @@ class ConnectionProvider extends ChangeNotifier {
   ConnectionState _state = ConnectionState.idle;
   int _reconnectAttempts = 0;
   String _ultimoModo = 'nuevo';
+<<<<<<< HEAD
+  StreamSubscription<Map<String, dynamic>>? _forwardingSubscription;
+
+  /// Callback asignado por la capa de pantallas (una sola vez, apenas
+  /// arranca la app — ver main.dart) para reenviar cada mensaje entrante
+  /// a GameProvider.handleMessage en el momento en que llega, sin esperar
+  /// a que GameScreen se monte. Necesario porque el stream de mensajes es
+  /// un broadcast stream: un listener que se suscribe tarde (ej. recién
+  /// al montar GameScreen, después de la navegación Splash->Game) pierde
+  /// para siempre cualquier mensaje emitido antes de esa suscripción —
+  /// típicamente el task_list inicial, que Unity manda enseguida tras
+  /// procesar 'connect' a través del relay.
+  void Function(Map<String, dynamic>)? onMessage;
+=======
+>>>>>>> origin/main
 
   ConnectionState get state => _state;
   int get reconnectAttempts => _reconnectAttempts;
@@ -41,8 +61,18 @@ class ConnectionProvider extends ChangeNotifier {
     _state = ConnectionState.connecting;
     notifyListeners();
 
+<<<<<<< HEAD
+    _forwardingSubscription?.cancel();
+
     if (ServerConfig.useMock) {
       appLogger.i('Connecting via MockServerService');
+      _forwardingSubscription = _mockService.messages.listen(
+        (Map<String, dynamic> mensaje) => onMessage?.call(mensaje),
+      );
+=======
+    if (ServerConfig.useMock) {
+      appLogger.i('Connecting via MockServerService');
+>>>>>>> origin/main
       _mockService.start();
       _state = ConnectionState.connected;
       _reconnectAttempts = 0;
@@ -50,7 +80,22 @@ class ConnectionProvider extends ChangeNotifier {
       return;
     }
 
+<<<<<<< HEAD
+    // Suscribirse ANTES de mandar 'connect': Unity (vía el relay) responde
+    // con task_list de inmediato tras recibirlo, y _wsService.messages es
+    // un broadcast stream (no bufferea para listeners tardíos) — si nos
+    // suscribimos después de sendMessage, esa primera respuesta puede
+    // llegar y perderse antes de que este listener exista.
     _wsService.connect(ServerConfig.wsUrl);
+    _forwardingSubscription = _wsService.messages.listen(
+      (Map<String, dynamic> mensaje) => onMessage?.call(mensaje),
+      onError: (Object error) => _handleDisconnect(),
+      onDone: _handleDisconnect,
+    );
+
+=======
+    _wsService.connect(ServerConfig.wsUrl);
+>>>>>>> origin/main
     _wsService.sendMessage({
       'type': 'connect',
       'device': 'tablet',
@@ -62,12 +107,15 @@ class ConnectionProvider extends ChangeNotifier {
     _state = ConnectionState.connected;
     _reconnectAttempts = 0;
     notifyListeners();
+<<<<<<< HEAD
+=======
 
     _wsService.messages.listen(
       (_) {},
       onError: (Object error) => _handleDisconnect(),
       onDone: _handleDisconnect,
     );
+>>>>>>> origin/main
   }
 
   void _handleDisconnect() {
@@ -87,6 +135,11 @@ class ConnectionProvider extends ChangeNotifier {
   }
 
   void disconnect() {
+<<<<<<< HEAD
+    _forwardingSubscription?.cancel();
+    _forwardingSubscription = null;
+=======
+>>>>>>> origin/main
     _wsService.disconnect();
     _mockService.stop();
     _state = ConnectionState.idle;
@@ -95,6 +148,10 @@ class ConnectionProvider extends ChangeNotifier {
 
   @override
   void dispose() {
+<<<<<<< HEAD
+    _forwardingSubscription?.cancel();
+=======
+>>>>>>> origin/main
     _wsService.dispose();
     _mockService.dispose();
     super.dispose();

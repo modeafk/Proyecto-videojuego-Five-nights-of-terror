@@ -91,6 +91,10 @@ public class UnityGameSessionController : MonoBehaviour
     public UnityWebSocketClient websocketClient;
     public AnimatronicGameCoordinator coordinator;
     public HeadOrientationTracker detectorCabeza;
+<<<<<<< HEAD
+    public GestorSonidoJuego gestorSonido;
+=======
+>>>>>>> origin/main
 
     [Header("Actores ya colocados en Face Landmark Detection")]
     public string actorFreddy = "enemigo1";
@@ -113,14 +117,25 @@ public class UnityGameSessionController : MonoBehaviour
     private const float TickSeconds = 0.5f;
     private const float GameTimeScale = 3f;
     private const float MaxMusicBox = 2000f;
+<<<<<<< HEAD
+    private const float SegundosEntreTareas = 30f;
     private const int MaxNight = 6;
     private const string InitialTask = "cables";
+    
+=======
+    private const int MaxNight = 6;
+    private const string InitialTask = "cables";
+>>>>>>> origin/main
     private static readonly Dictionary<string, int> Durations = new Dictionary<string, int>
     {
         { "cables", 30 }, { "dials", 20 }, { "sequence", 25 }, { "rhythm", 15 },
         { "wifi", 15 }, { "temperatura", 20 }, { "ventiladores", 20 },
         { "procesar_datos", 15 }, { "subir_datos", 12 }, { "trazar_curso", 20 }
     };
+<<<<<<< HEAD
+    
+=======
+>>>>>>> origin/main
     private static readonly Dictionary<string, string> Descriptions = new Dictionary<string, string>
     {
         { "cables", "Conectar los cables del color correcto" }, { "dials", "Girar perillas a posición correcta" },
@@ -129,12 +144,23 @@ public class UnityGameSessionController : MonoBehaviour
         { "ventiladores", "Reparar ventiladores" }, { "procesar_datos", "Procesar datos" },
         { "subir_datos", "Subir datos" }, { "trazar_curso", "Trazar curso" }
     };
+<<<<<<< HEAD
+    
+=======
+>>>>>>> origin/main
     private static readonly string[] FreddyTypes = { "temperatura", "ventiladores", "cables", "dials", "trazar_curso" };
     private static readonly string[] VixyTypes = { "wifi", "sequence", "rhythm", "procesar_datos", "subir_datos" };
     private static readonly int[] FreddyNightLevels = { 0, 0, 1, 0, 3, 4 };
     private static readonly int[] VixyNightLevels = { 0, 1, 5, 4, 7, 12 };
     private static readonly int[] PuppetNightLevels = { 0, 3, 0, 2, 5, 10 };
+<<<<<<< HEAD
+    // Segundos reales que tarda la caja en vaciarse por noche: 50, 45, 40,
+    // 35, 30, 25. El valor sale de MaxMusicBox / (drain * GameTimeScale /
+    // TickSeconds); cambiar GameTimeScale o TickSeconds obliga a recalcular.
+    private static readonly int[] PuppetDrainRates = { 13, 15, 17, 19, 22, 27 };
+=======
     private static readonly int[] PuppetDrainRates = { 40, 40, 60, 80, 100, 120 };
+>>>>>>> origin/main
 
     private readonly List<TaskData> activeTasks = new List<TaskData>();
     private readonly List<AnimatronicUnityBrain> brains = new List<AnimatronicUnityBrain>();
@@ -147,16 +173,34 @@ public class UnityGameSessionController : MonoBehaviour
     private int tasksCompleted;
     private int tasksFailed;
     private int taskId = 1;
+<<<<<<< HEAD
+    private bool puppetEnPeligroPrevio;
+    private bool puppetCajaVaciaPrevio;
+    private float segundosDesdeUltimaTarea;
+=======
+>>>>>>> origin/main
 
     private void Awake()
     {
         if (websocketClient == null) websocketClient = FindObjectOfType<UnityWebSocketClient>();
         if (coordinator == null) coordinator = FindObjectOfType<AnimatronicGameCoordinator>();
         if (detectorCabeza == null) detectorCabeza = FindObjectOfType<HeadOrientationTracker>();
+<<<<<<< HEAD
+        if (gestorSonido == null) gestorSonido = FindObjectOfType<GestorSonidoJuego>();
+=======
+>>>>>>> origin/main
         if (jugador == null && Camera.main != null) jugador = Camera.main.transform;
         ConfigureSceneActors();
     }
 
+<<<<<<< HEAD
+    private void Start()
+    {
+        if (!partidaActiva && gestorSonido != null) gestorSonido.ReproducirMusicaMenu();
+    }
+
+=======
+>>>>>>> origin/main
     private void OnEnable() => UnityWebSocketClient.MessageReceived += OnMessage;
     private void OnDisable() => UnityWebSocketClient.MessageReceived -= OnMessage;
 
@@ -266,7 +310,14 @@ public class UnityGameSessionController : MonoBehaviour
                 case "connect": StartGame(JsonUtility.FromJson<ConnectMessage>(json)); break;
                 case "task_completed":
                 case "task_failed": ResolveTask(JsonUtility.FromJson<TaskResultMessage>(json), header.type == "task_failed"); break;
+<<<<<<< HEAD
+                case "dar_cuerda_inicio":
+                    windingPuppet = true;
+                    if (gestorSonido != null) gestorSonido.ReproducirCuerdaCajaMusica();
+                    break;
+=======
                 case "dar_cuerda_inicio": windingPuppet = true; break;
+>>>>>>> origin/main
                 case "dar_cuerda_fin": windingPuppet = false; break;
                 case "disconnect": partidaActiva = false; break;
             }
@@ -294,7 +345,16 @@ public class UnityGameSessionController : MonoBehaviour
         completedTaskTypes.Clear();
         windingPuppet = false;
         valorCajaPuppet = MaxMusicBox;
+<<<<<<< HEAD
+        puppetEnPeligroPrevio = false;
+        puppetCajaVaciaPrevio = false;
+        segundosDesdeUltimaTarea = 0f;
         partidaActiva = true;
+        desktopJumpscareShown = false;
+        if (gestorSonido != null) gestorSonido.DetenerMusica();
+=======
+        partidaActiva = true;
+>>>>>>> origin/main
         if (coordinator != null)
         {
             coordinator.partidaFinalizada = false;
@@ -325,17 +385,47 @@ public class UnityGameSessionController : MonoBehaviour
         float signedRate = windingPuppet ? drain * 2f : -drain;
         valorCajaPuppet = Mathf.Clamp(valorCajaPuppet + signedRate * gameDelta, 0f, MaxMusicBox);
 
+<<<<<<< HEAD
+        bool puppetEnPeligroAhora = valorCajaPuppet < MaxMusicBox * 0.2f;
+        if (puppetEnPeligroAhora && !puppetEnPeligroPrevio && gestorSonido != null)
+            gestorSonido.ReproducirPeligro();
+        puppetEnPeligroPrevio = puppetEnPeligroAhora;
+
+        bool puppetCajaVaciaAhora = valorCajaPuppet <= 0f;
+        if (puppetCajaVaciaAhora && !puppetCajaVaciaPrevio && gestorSonido != null)
+            gestorSonido.ReproducirPopGoesTheWeasel();
+        puppetCajaVaciaPrevio = puppetCajaVaciaAhora;
+
+        // Las tareas ya no dependen del cambio de hora: aparecen en su propio
+        // ritmo para que el jugador tenga tiempo de resolverlas.
+        segundosDesdeUltimaTarea += TickSeconds;
+        if (segundosDesdeUltimaTarea >= SegundosEntreTareas)
+        {
+            segundosDesdeUltimaTarea -= SegundosEntreTareas;
+            TryGenerateNightTasks();
+        }
+
+=======
+>>>>>>> origin/main
         if (secondsIntoHour >= 60f)
         {
             secondsIntoHour -= 60f;
             if (hora < 6)
             {
                 hora++;
+<<<<<<< HEAD
+=======
                 TryGenerateNightTasks();
+>>>>>>> origin/main
                 foreach (AnimatronicUnityBrain brain in brains) brain.SetNight(noche, GetInGameTime());
             }
             else
             {
+<<<<<<< HEAD
+                // Reaching 6 a.m. means the player survived this night.
+                FinishGame(true, false, null);
+                return;
+=======
                 // A clock boundary advances the night; only an animatronic
                 // physically reaching the player ends the session.
                 noche = Mathf.Min(noche + 1, MaxNight);
@@ -348,18 +438,27 @@ public class UnityGameSessionController : MonoBehaviour
                 PlayerPrefs.SetInt("ihc_next_night_" + playerId, noche);
                 PlayerPrefs.Save();
                 TryGenerateNightTasks();
+>>>>>>> origin/main
             }
         }
 
         foreach (AnimatronicUnityBrain brain in brains)
+<<<<<<< HEAD
+            if (brain.EsPuppet) brain.SetPuppetState(100f * valorCajaPuppet / MaxMusicBox, puppetEnPeligroAhora);
+=======
             if (brain.EsPuppet) brain.SetPuppetState(100f * valorCajaPuppet / MaxMusicBox, valorCajaPuppet < MaxMusicBox * 0.2f);
+>>>>>>> origin/main
 
         if (coordinator != null)
         {
             coordinator.noche = noche;
             coordinator.horaEnJuego = GetInGameTime();
             coordinator.porcentajeCajaPuppet = 100f * valorCajaPuppet / MaxMusicBox;
+<<<<<<< HEAD
+            coordinator.puppetEnPeligro = puppetEnPeligroAhora;
+=======
             coordinator.puppetEnPeligro = valorCajaPuppet < MaxMusicBox * 0.2f;
+>>>>>>> origin/main
         }
 
         PublishState();
@@ -519,6 +618,10 @@ public class UnityGameSessionController : MonoBehaviour
     {
         if (desktopJumpscareShown) return;
         desktopJumpscareShown = true;
+<<<<<<< HEAD
+        if (gestorSonido != null) gestorSonido.InterrumpirEfectosPorJumpscare();
+=======
+>>>>>>> origin/main
 
         Texture2D image = desktopJumpscareImage != null
             ? desktopJumpscareImage
@@ -581,6 +684,15 @@ public class UnityGameSessionController : MonoBehaviour
         partidaActiva = false;
         foreach (AnimatronicUnityBrain brain in brains) brain.Detener();
 
+<<<<<<< HEAD
+        if (gestorSonido != null)
+        {
+            if (won) gestorSonido.ReproducirCampanas6am();
+            gestorSonido.ReproducirMusicaMenu();
+        }
+
+=======
+>>>>>>> origin/main
         string result = died ? "loss" : "win";
         string key = "ihc_next_night_" + playerId;
         if (won && noche >= MaxNight)

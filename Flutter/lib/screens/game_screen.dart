@@ -1,5 +1,8 @@
+<<<<<<< HEAD
+=======
 import 'dart:async';
 
+>>>>>>> origin/main
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/task.dart';
@@ -36,6 +39,8 @@ class _GameScreenState extends State<GameScreen> {
   bool _wired = false;
   bool _mostrandoCajaDePuppet = false;
   bool _gameOverTransitionScheduled = false;
+<<<<<<< HEAD
+=======
   StreamSubscription<Map<String, dynamic>>? _messageSubscription;
 
   @override
@@ -43,17 +48,30 @@ class _GameScreenState extends State<GameScreen> {
     _messageSubscription?.cancel();
     super.dispose();
   }
+>>>>>>> origin/main
 
   @override
   Widget build(BuildContext context) {
     final ConnectionProvider connection = context.watch<ConnectionProvider>();
     final GameProvider game = context.watch<GameProvider>();
 
+<<<<<<< HEAD
+    // El reenvío de mensajes del servidor a GameProvider.handleMessage ya
+    // corre desde ConnectionProvider (ver main.dart, onMessage), activo
+    // desde el momento en que se conecta — no desde que esta pantalla se
+    // monta. Suscribirse acá de nuevo perdería el task_list inicial (llega
+    // antes de montar GameScreen) o, peor, procesaría cada mensaje dos
+    // veces si se suscribiera además de ConnectionProvider.
+=======
+>>>>>>> origin/main
     if (!_wired) {
       _wired = true;
       game.sendToServer = connection.sender;
       game.mockServidor = connection.mockService;
+<<<<<<< HEAD
+=======
       _messageSubscription = connection.messages.listen(game.handleMessage);
+>>>>>>> origin/main
     }
 
     if (game.esVictoriaFinal) {
@@ -77,6 +95,9 @@ class _GameScreenState extends State<GameScreen> {
 
     return Scaffold(
       appBar: AppBar(
+<<<<<<< HEAD
+        leading: _buildBotonVolver(game),
+=======
         leading: _mostrandoCajaDePuppet
             ? IconButton(
                 icon: const Icon(Icons.arrow_back),
@@ -84,6 +105,7 @@ class _GameScreenState extends State<GameScreen> {
                 onPressed: () => setState(() => _mostrandoCajaDePuppet = false),
               )
             : null,
+>>>>>>> origin/main
         title: StatusBar(
           connectionState: connection.state,
           reconnectAttempts: connection.reconnectAttempts,
@@ -114,6 +136,32 @@ class _GameScreenState extends State<GameScreen> {
     );
   }
 
+<<<<<<< HEAD
+  /// Flecha para volver al menú de tareas, visible mientras haya algo
+  /// abierto encima de él (la caja de Puppet o una tarea). Salir de una
+  /// tarea no la resuelve ni la falla: sigue pendiente en el menú.
+  Widget? _buildBotonVolver(GameProvider game) {
+    if (_mostrandoCajaDePuppet) {
+      return IconButton(
+        icon: const Icon(Icons.arrow_back),
+        tooltip: 'Volver al menú de tareas',
+        onPressed: () => setState(() => _mostrandoCajaDePuppet = false),
+      );
+    }
+
+    if (game.session.currentTask != null) {
+      return IconButton(
+        icon: const Icon(Icons.arrow_back),
+        tooltip: 'Volver al menú de tareas',
+        onPressed: game.volverAlMenuDeTareas,
+      );
+    }
+
+    return null;
+  }
+
+=======
+>>>>>>> origin/main
   /// Decide qué mostrar en el cuerpo de la pantalla: la caja de Puppet
   /// (pantalla dedicada, abierta desde su tarjeta en el menú), la tarea
   /// en curso, o el menú de tareas si no hay ninguna de las dos abierta.
